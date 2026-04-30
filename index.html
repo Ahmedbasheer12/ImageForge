@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImageForge - Bulk Image Converter & Compressor</title>
+    <meta name="description" content="A powerful client-side image conversion and compression tool. Convert images between JPG, PNG, WEBP formats with customizable quality and dimensions.">
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%236366F1'/><path d='M8 12L12 8L20 16L24 12' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/><path d='M8 20L12 24L20 12' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/><circle cx='22' cy='10' r='3' fill='white' fill-opacity='0.9'/></svg>">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+
+    <!-- JSZip for ZIP download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background Effects -->
+    <div class="bg-pattern"></div>
+    <div class="bg-glow"></div>
+    <div class="bg-grid"></div>
+
+    <!-- App Container -->
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo-wrapper">
+                    <div class="logo-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="32" height="32" rx="10" fill="url(#logoGrad)"/>
+                            <path d="M8 12L12 8L20 16L24 12" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M8 20L12 24L20 12" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="22" cy="10" r="3" fill="white" fill-opacity="0.9"/>
+                            <defs>
+                                <linearGradient id="logoGrad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#6366F1"/>
+                                    <stop offset="1" stop-color="#8B5CF6"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <div class="logo-text">
+                        <h1>ImageForge</h1>
+                        <p>Bulk Image Converter & Compressor</p>
+                    </div>
+                </div>
+
+                <div class="header-actions">
+                    <div class="header-badge">
+                        <span class="badge-icon">⚡</span>
+                        <span>100% Browser-Based</span>
+                    </div>
+                    <div class="header-badge secondary">
+                        <span class="badge-icon">🎓</span>
+                        <span>SWE402 Project</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature Pills -->
+            <div class="feature-pills">
+                <span class="pill">✨ Convert Format</span>
+                <span class="pill">📦 Bulk Process</span>
+                <span class="pill">📉 Compress Size</span>
+                <span class="pill">📥 ZIP Download</span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Upload Section -->
+            <section class="upload-section" id="uploadSection">
+                <div class="section-header">
+                    <h2>📤 Upload Images</h2>
+                    <p>Drag & drop images here or click to browse • Supports PNG, JPG, WEBP, BMP, GIF</p>
+                </div>
+
+                <div class="upload-zone" id="uploadZone">
+                    <input type="file" id="fileInput" multiple accept="image/png,image/jpeg,image/webp,image/bmp,image/gif" hidden>
+
+                    <div class="upload-content" id="uploadContent">
+                        <div class="upload-illustration">
+                            <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="40" cy="40" r="35" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 4" class="upload-circle"/>
+                                <path d="M40 25V55M25 40H55" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" class="upload-cross"/>
+                                <circle cx="30" cy="30" r="4" fill="currentColor" opacity="0.3"/>
+                                <circle cx="50" cy="30" r="4" fill="currentColor" opacity="0.3"/>
+                                <circle cx="30" cy="50" r="4" fill="currentColor" opacity="0.3"/>
+                                <circle cx="50" cy="50" r="4" fill="currentColor" opacity="0.3"/>
+                            </svg>
+                        </div>
+                        <h3>Drop your images here</h3>
+                        <p>or <span class="browse-link">browse files</span> to select</p>
+                        <div class="upload-features">
+                            <span class="upload-feature">
+                                <span class="feature-icon">🖼️</span>
+                                <span>Multiple files</span>
+                            </span>
+                            <span class="upload-feature">
+                                <span class="feature-icon">🔒</span>
+                                <span>Privacy safe</span>
+                            </span>
+                            <span class="upload-feature">
+                                <span class="feature-icon">⚡</span>
+                                <span>Fast processing</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="upload-processing" id="uploadProcessing" hidden>
+                        <div class="spinner-ring"></div>
+                        <p>Processing uploads...</p>
+                    </div>
+                </div>
+
+                <!-- File Info Bar -->
+                <div class="file-info-bar" id="fileInfoBar" hidden>
+                    <div class="file-info-left">
+                        <span class="file-icon">🖼️</span>
+                        <span class="file-count"><span id="fileCount">0</span> images selected</span>
+                    </div>
+                    <div class="file-info-right">
+                        <span class="total-size">Total: <span id="totalSize">0 KB</span></span>
+                        <button class="btn-clear" id="clearFiles">
+                            <span>✕</span> Clear all
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Panel -->
+            <section class="settings-panel" id="settingsPanel">
+                <div class="settings-card">
+                    <div class="settings-header">
+                        <h3>⚙️ Conversion Settings</h3>
+                        <p class="settings-subtitle">Customize your output preferences</p>
+                    </div>
+
+                    <div class="settings-grid">
+                        <!-- Output Format -->
+                        <div class="setting-group">
+                            <label class="setting-label">
+                                <span class="label-icon">🎯</span>
+                                Output Format
+                            </label>
+                            <div class="format-buttons">
+                                <button class="format-btn active" data-format="image/jpeg">
+                                    <span class="format-icon">🟡</span>
+                                    <span class="format-name">JPG</span>
+                                    <span class="format-desc">Best for photos</span>
+                                </button>
+                                <button class="format-btn" data-format="image/png">
+                                    <span class="format-icon">🔵</span>
+                                    <span class="format-name">PNG</span>
+                                    <span class="format-desc">Lossless quality</span>
+                                </button>
+                                <button class="format-btn" data-format="image/webp">
+                                    <span class="format-icon">🟢</span>
+                                    <span class="format-name">WEBP</span>
+                                    <span class="format-desc">Best compression</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Quality Slider -->
+                        <div class="setting-group">
+                            <label class="setting-label">
+                                <span class="label-icon">📊</span>
+                                Compression Quality
+                                <span class="quality-value" id="qualityValue">80%</span>
+                            </label>
+                            <div class="slider-container">
+                                <input type="range" id="qualitySlider" min="10" max="100" value="80" class="quality-slider">
+                                <div class="slider-track">
+                                    <div class="slider-fill" id="sliderFill" style="width: 70%;"></div>
+                                </div>
+                                <div class="slider-labels">
+                                    <span>Smaller file</span>
+                                    <span>Higher quality</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Max Dimensions -->
+                        <div class="setting-group">
+                            <label class="setting-label">
+                                <span class="label-icon">📏</span>
+                                Max Dimensions (Optional)
+                            </label>
+                            <div class="dimension-inputs">
+                                <div class="input-group">
+                                    <label>Width</label>
+                                    <input type="number" id="maxWidth" placeholder="Auto" min="100" max="8000">
+                                    <span class="input-suffix">px</span>
+                                </div>
+                                <span class="dimension-separator">×</span>
+                                <div class="input-group">
+                                    <label>Height</label>
+                                    <input type="number" id="maxHeight" placeholder="Auto" min="100" max="8000">
+                                    <span class="input-suffix">px</span>
+                                </div>
+                            </div>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="maintainAspect" checked>
+                                <span class="checkmark"></span>
+                                <span>Maintain aspect ratio</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Privacy Note -->
+                    <div class="privacy-note">
+                        <div class="privacy-icon-wrapper">
+                            <span class="privacy-icon">🔒</span>
+                        </div>
+                        <div class="privacy-text">
+                            <strong>Your privacy is protected</strong>
+                            <p>All compression happens locally in your browser. No images are uploaded to any server.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Action Button -->
+            <section class="action-section" id="actionSection">
+                <button class="btn-primary" id="processBtn" disabled>
+                    <span class="btn-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                        </svg>
+                    </span>
+                    <span class="btn-text">Convert & Compress</span>
+                    <span class="btn-badge" id="processBadge">0</span>
+                </button>
+                <p class="action-hint">Press <kbd>Enter</kbd> to process</p>
+            </section>
+
+            <!-- Progress Section -->
+            <section class="progress-section" id="progressSection" hidden>
+                <div class="progress-card">
+                    <div class="progress-header">
+                        <span class="progress-title">
+                            <span class="progress-icon">⚙️</span>
+                            Processing Images
+                        </span>
+                        <span class="progress-count">
+                            <span id="processedCount">0</span> / <span id="totalCount">0</span>
+                        </span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progressBar"></div>
+                        <div class="progress-bar-glow"></div>
+                    </div>
+                    <div class="progress-status" id="progressStatus">
+                        <span class="status-spinner"></span>
+                        Preparing...
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section" id="resultsSection" hidden>
+                <div class="results-header">
+                    <div class="results-title-row">
+                        <h2>✨ Conversion Complete</h2>
+                        <span class="results-badge" id="resultsBadge">0% saved</span>
+                    </div>
+                    <div class="results-summary" id="resultsSummary">
+                        <span class="summary-item">
+                            <span class="summary-icon">📁</span>
+                            <span id="resultCount">0</span> files processed
+                        </span>
+                        <span class="summary-divider">•</span>
+                        <span class="summary-item">
+                            <span class="summary-icon">📊</span>
+                            <span id="avgCompression">0%</span> avg compression
+                        </span>
+                    </div>
+                </div>
+
+                <div class="results-actions">
+                    <button class="btn-secondary" id="downloadAllBtn" disabled>
+                        <span class="btn-icon">📦</span>
+                        Download All as ZIP
+                    </button>
+                    <button class="btn-outline" id="processMoreBtn">
+                        <span class="btn-icon">➕</span>
+                        Process More
+                    </button>
+                </div>
+
+                <div class="results-grid" id="resultsGrid"></div>
+            </section>
+
+            <!-- Empty State -->
+            <section class="empty-state" id="emptyState">
+                <div class="empty-illustration">
+                    <svg width="140" height="140" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="70" cy="70" r="60" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.2"/>
+                        <circle cx="70" cy="70" r="45" stroke="currentColor" stroke-width="1" opacity="0.15"/>
+                        <rect x="45" y="35" width="50" height="70" rx="8" stroke="currentColor" stroke-width="2" opacity="0.4"/>
+                        <path d="M55 65L65 55L80 70L95 55" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+                        <circle cx="58" cy="85" r="5" fill="currentColor" opacity="0.3"/>
+                        <circle cx="82" cy="85" r="5" fill="currentColor" opacity="0.3"/>
+                        <path d="M70 20V30M70 110V120M20 70H30M110 70H120" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.2"/>
+                    </svg>
+                </div>
+                <h3>Ready to Transform Your Images</h3>
+                <p>Upload your images above to convert formats, compress size, and batch process multiple files instantly.</p>
+                <div class="empty-features">
+                    <div class="empty-feature">
+                        <span class="feature-icon">🔄</span>
+                        <span>Format Conversion</span>
+                    </div>
+                    <div class="empty-feature">
+                        <span class="feature-icon">📉</span>
+                        <span>Size Compression</span>
+                    </div>
+                    <div class="empty-feature">
+                        <span class="feature-icon">📐</span>
+                        <span>Smart Resizing</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-content">
+                <p class="footer-brand">ImageForge — SWE402 Internet Programming Course Project</p>
+                <p class="footer-tech">Built with vanilla HTML, CSS & JavaScript • No frameworks • 100% client-side</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
